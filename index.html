@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLIPMASTERY — The Ultimate Streamer Clipping Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0a0f;
+    --bg-card: #111119;
+    --bg-card-hover: #16161f;
+    --neon-green: #39ff14;
+    --neon-green-dim: #39ff1433;
+    --neon-purple: #b14eff;
+    --neon-purple-dim: #b14eff22;
+    --text-primary: #eeeef0;
+    --text-muted: #8888a0;
+    --text-dim: #55556a;
+    --border-subtle: #1e1e2a;
+    --border-glow: #39ff1444;
+    --danger: #ff3a5c;
+    --gold: #ffd700;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: auto; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ─── Floating Book ─── */
+  .hero-book {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 2rem;
+    animation: fade-in-up 0.8s ease-out, book-float 4s ease-in-out infinite 0.8s;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
+  }
+
+  @keyframes book-float {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-12px) rotate(-2deg); }
+  }
+
+  .hero-book svg {
+    width: 180px;
+    height: auto;
+  }
+
+  @media (max-width: 768px) {
+    .hero-book svg { width: 140px; }
+  }
+
+  /* ─── Grain overlay ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ─── Nav ─── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2.5rem;
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .logo {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    color: var(--neon-green);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--neon-green);
+    clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--text-primary); }
+
+  .nav-cta {
+    background: var(--neon-green) !important;
+    color: var(--bg-deep) !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
+    font-weight: 600 !important;
+    font-family: 'Chakra Petch', sans-serif;
+    transition: box-shadow 0.3s !important;
+  }
+
+  .nav-cta:hover {
+    box-shadow: 0 0 20px var(--neon-green-dim), 0 0 40px var(--neon-green-dim);
+  }
+
+  /* ─── Hero ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border-subtle) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 20%, transparent 70%);
+    opacity: 0.5;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--neon-green-dim) 0%, transparent 70%);
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: pulse-glow 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .hero-glow-purple {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--neon-purple-dim) 0%, transparent 70%);
+    bottom: 10%;
+    right: 10%;
+    animation: pulse-glow 5s ease-in-out infinite reverse;
+    pointer-events: none;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+    50% { opacity: 0.7; transform: translateX(-50%) scale(1.1); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--neon-green-dim);
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+    animation: fade-in-up 0.8s ease-out;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--neon-green);
+    animation: blink 2s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero h1 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    position: relative;
+    z-index: 1;
+    animation: fade-in-up 0.8s ease-out 0.1s both;
+  }
+
+  .hero h1 .line-2 {
+    display: block;
+    color: var(--neon-green);
+    text-shadow: 0 0 40px var(--neon-green-dim);
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin-top: 1.5rem;
+    position: relative;
+    z-index: 1;
+    font-weight: 300;
+    animation: fade-in-up 0.8s ease-out 0.2s both;
+  }
+
+  .hero-cta-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    position: relative;
+    z-index: 1;
+    animation: fade-in-up 0.8s ease-out 0.35s both;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--neon-green);
+    color: var(--bg-deep);
+    padding: 0.9rem 2rem;
+    border-radius: 6px;
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 24px var(--neon-green-dim), 0 0 60px var(--neon-green-dim);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--text-muted);
+    padding: 0.9rem 2rem;
+    border-radius: 6px;
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: 1px solid var(--border-subtle);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+  }
+
+  .hero-proof {
+    margin-top: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: fade-in-up 0.8s ease-out 0.5s both;
+  }
+
+  .avatar-stack {
+    display: flex;
+  }
+
+  .avatar-stack span {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-deep);
+    margin-left: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .avatar-stack span:first-child { margin-left: 0; }
+  .avatar-stack span:nth-child(1) { background: #ff6b6b; }
+  .avatar-stack span:nth-child(2) { background: #4ecdc4; }
+  .avatar-stack span:nth-child(3) { background: #ffe66d; color: #333; }
+  .avatar-stack span:nth-child(4) { background: var(--neon-purple); }
+
+  .hero-proof-text {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+
+  .hero-proof-text strong {
+    color: var(--text-muted);
+  }
+
+  /* ─── Section styling ─── */
+  section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--neon-green);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .section-desc {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 560px;
+    font-weight: 300;
+  }
+
+  /* ─── What You Get ─── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 2rem;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .feature-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-glow);
+    transform: translateY(-4px);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+    background: var(--neon-green-dim);
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+  }
+
+  .feature-card h3 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ─── Preview / Table of Contents ─── */
+  .preview-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+    margin-top: 3rem;
+  }
+
+  .toc-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 2rem;
+  }
+
+  .toc-card h3 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: all 0.2s;
+  }
+
+  .toc-item:last-child { border-bottom: none; }
+
+  .toc-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--neon-green);
+    min-width: 28px;
+  }
+
+  .toc-label {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 400;
+  }
+
+  .toc-locked {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    background: var(--bg-deep);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .preview-text h3 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .preview-text p {
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .preview-text ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .preview-text ul li {
+    padding: 0.4rem 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .check {
+    color: var(--neon-green);
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  /* ─── Pricing / Paywall ─── */
+  #pricing {
+    text-align: center;
+  }
+
+  .pricing-card {
+    max-width: 480px;
+    margin: 3rem auto 0;
+    background: var(--bg-card);
+    border: 2px solid var(--neon-green);
+    border-radius: 14px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top, var(--neon-green-dim) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .pricing-popular {
+    position: absolute;
+    top: 1rem;
+    right: -2rem;
+    background: var(--neon-green);
+    color: var(--bg-deep);
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 2.5rem;
+    transform: rotate(35deg);
+    z-index: 2;
+  }
+
+  .price {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    position: relative;
+    z-index: 1;
+    line-height: 1;
+  }
+
+  .price-currency {
+    font-size: 1.5rem;
+    vertical-align: super;
+    color: var(--neon-green);
+  }
+
+  .price-period {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    margin-top: 0.5rem;
+  }
+
+  .pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pricing-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .pricing-features li:last-child { border: none; }
+
+  .pricing-features .pf-icon {
+    color: var(--neon-green);
+    font-size: 1rem;
+    min-width: 20px;
+    text-align: center;
+  }
+
+  .pricing-btn {
+    display: block;
+    width: 100%;
+    background: var(--neon-green);
+    color: var(--bg-deep);
+    padding: 1rem;
+    border-radius: 8px;
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s;
+  }
+
+  .pricing-btn:hover {
+    box-shadow: 0 0 30px var(--neon-green-dim), 0 0 60px var(--neon-green-dim);
+    transform: translateY(-2px);
+  }
+
+  .pricing-guarantee {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── FAQ ─── */
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .faq-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+
+  .faq-item h4 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+
+  .faq-item p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ─── Footer ─── */
+  footer {
+    border-top: 1px solid var(--border-subtle);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--neon-green);
+    margin-bottom: 0.5rem;
+  }
+
+  footer p {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
+
+  /* ─── Paywall Modal ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    max-width: 440px;
+    width: 100%;
+    padding: 2.5rem;
+    position: relative;
+    animation: modal-in 0.3s ease-out;
+  }
+
+  @keyframes modal-in {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: var(--text-primary); }
+
+  .modal h2 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .form-group input {
+    width: 100%;
+    background: var(--bg-deep);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .form-group input:focus {
+    border-color: var(--neon-green);
+  }
+
+  .form-group input::placeholder {
+    color: var(--text-dim);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .modal-pay-btn {
+    display: block;
+    width: 100%;
+    background: var(--neon-green);
+    color: var(--bg-deep);
+    padding: 0.85rem;
+    border-radius: 8px;
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: all 0.3s;
+  }
+
+  .modal-pay-btn:hover {
+    box-shadow: 0 0 24px var(--neon-green-dim);
+  }
+
+  .modal-secure {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+  }
+
+  /* ─── Success state ─── */
+  .success-view {
+    display: none;
+    text-align: center;
+    padding: 2rem 0;
+  }
+
+  .success-view.active { display: block; }
+
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--neon-green-dim);
+    border: 2px solid var(--neon-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin: 0 auto 1rem;
+    color: var(--neon-green);
+  }
+
+  .success-view h2 {
+    font-family: 'Chakra Petch', sans-serif;
+    margin-bottom: 0.5rem;
+  }
+
+  .success-view p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  /* ─── Free Preview Section ─── */
+  .free-preview {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .preview-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--neon-purple-dim);
+    border: 1px solid var(--neon-purple);
+    color: var(--neon-purple);
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .preview-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin-top: 2rem;
+    position: relative;
+  }
+
+  .preview-content h3 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+  }
+
+  .preview-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  .preview-formula-box {
+    background: linear-gradient(135deg, var(--bg-deep), var(--bg-card-hover));
+    border: 1px solid var(--border-glow);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .preview-formula-box.blurred .preview-formula-label,
+  .preview-formula-box.blurred .preview-formula-text {
+    filter: blur(8px);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .blur-unlock {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .blur-unlock-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--neon-green);
+    color: var(--bg-deep);
+    padding: 0.55rem 1.2rem;
+    border-radius: 6px;
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 20px var(--neon-green-dim);
+  }
+
+  .blur-unlock-btn:hover {
+    box-shadow: 0 0 30px var(--neon-green-dim), 0 0 60px var(--neon-green-dim);
+    transform: translateY(-1px);
+  }
+
+  /* ─── Social Proof Banner ─── */
+  .social-proof-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .social-proof-section h3 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+
+  .social-proof-section h3 .sp-highlight {
+    color: var(--neon-green);
+  }
+
+  .social-proof-section p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .preview-formula-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--neon-green);
+    margin-bottom: 0.5rem;
+  }
+
+  .preview-formula-text {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .preview-formula-text .fg { color: var(--neon-green); }
+  .preview-formula-text .fp { color: var(--neon-purple); }
+  .preview-formula-text .fy { color: var(--gold); }
+
+  .preview-fade {
+    position: relative;
+    margin-top: 1.5rem;
+  }
+
+  .preview-fade-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 180px;
+    background: linear-gradient(to bottom, transparent, var(--bg-card) 70%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 1.5rem;
+    z-index: 2;
+  }
+
+  .preview-fade-overlay .btn-primary {
+    font-size: 0.85rem;
+    padding: 0.7rem 1.5rem;
+  }
+
+  .preview-fade-text {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 0.5rem;
+  }
+
+  /* ─── Divider ─── */
+  .section-divider {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 768px) {
+    nav { padding: 0.75rem 1rem; }
+    .nav-links { gap: 1rem; }
+    .nav-links a:not(.nav-cta) { display: none; }
+    .preview-section { grid-template-columns: 1fr; }
+    .faq-grid { grid-template-columns: 1fr; }
+    section { padding: 4rem 1.25rem; }
+    .guide-nav { width: 240px; }
+    .guide-main { margin-left: 240px; padding: 2rem 1.5rem 4rem; }
+    .guide-tip-grid { grid-template-columns: 1fr; }
+    .guide-do-dont { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .guide-nav { position: fixed; left: -280px; transition: left 0.3s; width: 280px; z-index: 300; }
+    .guide-nav.open { left: 0; }
+    .guide-main { margin-left: 0; padding: 2rem 1.25rem 4rem; }
+    .guide-mobile-toggle { display: flex !important; }
+  }
+
+  /* ═══════════════════════════════════════════════
+     GUIDE VIEW STYLES (behind paywall)
+     ═══════════════════════════════════════════════ */
+  .guide-view { display: none; }
+  .guide-view.active { display: block; }
+  .landing-view { display: block; }
+  .landing-view.hidden { display: none; }
+
+  .guide-nav {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 280px;
+    background: var(--bg-card); border-right: 1px solid var(--border-subtle);
+    padding: 2rem 0; z-index: 200; overflow-y: auto;
+  }
+
+  .guide-nav-logo {
+    font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.1rem;
+    letter-spacing: 0.15em; color: var(--neon-green); padding: 0 1.5rem;
+    margin-bottom: 2rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .guide-nav-logo .logo-icon { width: 20px; height: 20px; }
+
+  .guide-sidebar-label {
+    font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--text-dim); padding: 0 1.5rem; margin-bottom: 0.75rem;
+  }
+
+  .guide-sidebar-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.7rem 1.5rem; cursor: pointer; transition: all 0.2s;
+    border-left: 3px solid transparent; font-size: 0.88rem; color: var(--text-muted);
+  }
+  .guide-sidebar-item:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+  .guide-sidebar-item.active {
+    border-left-color: var(--neon-green); color: var(--neon-green); background: var(--neon-green-dim);
+  }
+
+  .guide-sidebar-num {
+    font-family: 'Space Mono', monospace; font-size: 0.7rem;
+    color: var(--text-dim); min-width: 22px;
+  }
+  .guide-sidebar-item.active .guide-sidebar-num { color: var(--neon-green); }
+
+  .guide-main {
+    margin-left: 280px; min-height: 100vh; padding: 3rem 4rem 6rem; max-width: 900px;
+  }
+
+  .guide-chapter-label {
+    font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--neon-green); margin-bottom: 0.5rem;
+  }
+
+  .guide-chapter-title {
+    font-family: 'Chakra Petch', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700; margin-bottom: 0.5rem; line-height: 1.1;
+  }
+
+  .guide-chapter-subtitle {
+    font-size: 1.05rem; color: var(--text-muted); font-weight: 300;
+    margin-bottom: 2.5rem; max-width: 600px;
+  }
+
+  .guide-section { margin-bottom: 3rem; }
+
+  .guide-section h3 {
+    font-family: 'Chakra Petch', sans-serif; font-size: 1.25rem;
+    font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+
+  .guide-section h3 .gs-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 8px; font-size: 0.9rem;
+    background: var(--neon-green-dim); border: 1px solid var(--neon-green); flex-shrink: 0;
+  }
+
+  .guide-section p {
+    color: var(--text-muted); font-size: 0.95rem; font-weight: 300;
+    line-height: 1.8; margin-bottom: 1rem;
+  }
+
+  .guide-callout {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--neon-green); border-radius: 0 8px 8px 0;
+    padding: 1.25rem 1.5rem; margin: 1.5rem 0;
+  }
+  .guide-callout-label {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--neon-green); margin-bottom: 0.4rem;
+  }
+  .guide-callout p { margin-bottom: 0; font-size: 0.9rem; }
+
+  .guide-example {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0;
+  }
+  .guide-example-label {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--neon-purple); margin-bottom: 0.75rem;
+  }
+  .guide-example-caption {
+    background: var(--bg-deep); border-radius: 8px; padding: 1rem 1.25rem;
+    font-size: 0.95rem; color: var(--text-primary); font-weight: 500;
+    border: 1px solid var(--border-subtle); line-height: 1.6;
+  }
+  .guide-example-caption .caption-name { color: var(--neon-green); font-weight: 600; }
+  .guide-example-caption .caption-emotion { color: var(--gold); font-weight: 700; text-transform: uppercase; }
+  .guide-example-caption .caption-reason { color: var(--danger); font-weight: 600; }
+
+  .guide-tip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+  .guide-tip {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 1.25rem;
+  }
+  .guide-tip-icon { font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .guide-tip h4 { font-family: 'Chakra Petch', sans-serif; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem; }
+  .guide-tip p { font-size: 0.82rem; color: var(--text-muted); font-weight: 300; margin: 0; line-height: 1.5; }
+
+  .guide-formula {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-card-hover));
+    border: 1px solid var(--border-glow); border-radius: 10px;
+    padding: 1.5rem; margin: 1.5rem 0; text-align: center;
+  }
+  .guide-formula-label {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--neon-green); margin-bottom: 0.75rem;
+  }
+  .guide-formula-content {
+    font-family: 'Chakra Petch', sans-serif; font-size: 1.15rem; font-weight: 600;
+    color: var(--text-primary); display: flex; align-items: center;
+    justify-content: center; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .guide-formula-content .arrow { color: var(--neon-green); font-size: 1.2rem; }
+  .guide-formula-content .highlight { color: var(--neon-green); }
+  .guide-formula-content .highlight-purple { color: var(--neon-purple); }
+  .guide-formula-content .highlight-gold { color: var(--gold); }
+
+  .guide-do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+  .guide-do, .guide-dont { border-radius: 8px; padding: 1.25rem; }
+  .guide-do { background: rgba(57, 255, 20, 0.05); border: 1px solid rgba(57, 255, 20, 0.2); }
+  .guide-dont { background: rgba(255, 58, 92, 0.05); border: 1px solid rgba(255, 58, 92, 0.2); }
+  .guide-do h4, .guide-dont h4 { font-family: 'Chakra Petch', sans-serif; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .guide-do h4 { color: var(--neon-green); }
+  .guide-dont h4 { color: var(--danger); }
+  .guide-do p, .guide-dont p { font-size: 0.82rem; color: var(--text-muted); font-weight: 300; margin: 0; line-height: 1.5; }
+
+  .guide-chapter-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle);
+  }
+  .guide-chapter-nav-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 0.75rem 1.25rem; cursor: pointer;
+    color: var(--text-muted); font-family: 'Outfit', sans-serif; font-size: 0.85rem; transition: all 0.2s;
+  }
+  .guide-chapter-nav-btn:hover { border-color: var(--neon-green); color: var(--text-primary); }
+  .guide-chapter-nav-btn .nav-btn-label {
+    font-family: 'Space Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); display: block;
+  }
+
+  .guide-mobile-toggle {
+    display: none; position: fixed; top: 1rem; left: 1rem; z-index: 250;
+    width: 40px; height: 40px; border-radius: 8px; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); align-items: center;
+    justify-content: center; cursor: pointer; color: var(--neon-green); font-size: 1.2rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     LANDING PAGE (original, unchanged)
+     ═══════════════════════════════════════════════ -->
+<div class="landing-view" id="landing-view">
+
+<!-- Nav -->
+<nav>
+  <a class="logo" onclick="showLanding()">
+    <div class="logo-icon"></div>
+    CLIPMASTERY
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#preview">Preview</a></li>
+    <li><a href="#free-preview">Free Sample</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#pricing" class="nav-cta">Get Access</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-purple"></div>
+
+  <div class="hero-book">
+    <svg viewBox="0 0 200 270" xmlns="http://www.w3.org/2000/svg">
+      <!-- Book shadow/back -->
+      <rect x="12" y="8" width="176" height="254" rx="4" fill="#080810" opacity="0.5"/>
+      <!-- Neon green accent strip (back) -->
+      <rect x="6" y="4" width="180" height="258" rx="4" fill="#39ff14"/>
+      <!-- Main cover -->
+      <rect x="10" y="2" width="174" height="254" rx="3" fill="#111119"/>
+      <!-- Top-right corner fold accent -->
+      <polygon points="140,2 184,2 184,46" fill="#39ff14" opacity="0.3"/>
+      <polygon points="142,2 184,2 184,44" fill="#39ff14" opacity="0.15"/>
+      <!-- Green accent line top -->
+      <rect x="10" y="2" width="174" height="3" rx="1" fill="#39ff14"/>
+      <!-- C letter -->
+      <text x="40" y="80" font-family="Helvetica,Arial,sans-serif" font-weight="700" font-size="42" fill="#39ff14" opacity="0.4">C</text>
+      <!-- THE -->
+      <text x="40" y="108" font-family="Helvetica,Arial,sans-serif" font-weight="400" font-size="10" fill="#888" letter-spacing="3">THE</text>
+      <!-- CLIPPER'S -->
+      <text x="40" y="138" font-family="Helvetica,Arial,sans-serif" font-weight="700" font-size="24" fill="#eeeef0">CLIPPER'S</text>
+      <!-- HANDBOOK -->
+      <text x="40" y="164" font-family="Helvetica,Arial,sans-serif" font-weight="700" font-size="22" fill="#39ff14">HANDBOOK</text>
+      <!-- Subtitle -->
+      <text x="40" y="192" font-family="Helvetica,Arial,sans-serif" font-weight="300" font-size="8.5" fill="#8888a0">The complete guide to</text>
+      <text x="40" y="204" font-family="Helvetica,Arial,sans-serif" font-weight="300" font-size="8.5" fill="#8888a0">clipping streamers — from</text>
+      <text x="40" y="216" font-family="Helvetica,Arial,sans-serif" font-weight="300" font-size="8.5" fill="#8888a0">finding the perfect moment</text>
+      <text x="40" y="228" font-family="Helvetica,Arial,sans-serif" font-weight="300" font-size="8.5" fill="#8888a0">to making money from clips.</text>
+      <!-- Bottom accent bar -->
+      <rect x="10" y="250" width="174" height="6" rx="1" fill="#39ff14" opacity="0.2"/>
+    </svg>
+  </div>
+
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Now Available — 2026 Edition
+  </div>
+
+  <h1>
+    MASTER THE ART OF
+    <span class="line-2">CLIPPING STREAMERS</span>
+  </h1>
+
+  <p class="hero-sub">
+    The definitive guide to finding, creating, and growing with viral clips. Turn streamer moments into views, followers, and revenue.
+  </p>
+
+  <div class="hero-cta-row">
+    <a href="#pricing" class="btn-primary">Unlock The Guide — £8.99</a>
+    <a href="#free-preview" class="btn-ghost">Free Sample</a>
+  </div>
+
+  <div class="hero-proof">
+    <div class="avatar-stack">
+      <span>JK</span>
+      <span>LD</span>
+      <span>MR</span>
+      <span>AX</span>
+    </div>
+    <div class="hero-proof-text">
+      <strong>500+</strong> clippers already inside
+    </div>
+  </div>
+</section>
+
+<div class="social-proof-section">
+  <h3>Join hundreds of others making <span class="sp-highlight">thousands every month</span> from this guide</h3>
+  <p>Clippers who follow this system are building real income streams from their clip channels. Whether you're starting from zero or looking to scale what you already have, the strategies inside are working right now — on TikTok, YouTube Shorts, and beyond.</p>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- Features -->
+<section id="features">
+  <div class="section-label">// What You Get</div>
+  <h2 class="section-title">Everything you need to<br>clip like a pro</h2>
+  <p class="section-desc">From finding the right streamers to editing, uploading, and growing your clip channels — it's all covered.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>How to Get Paid</h3>
+      <p>Where to find paid clipping opportunities, how to join the Kick clipping program, and which Discord servers connect you with big streamers.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📱</div>
+      <h3>Platform Strategy</h3>
+      <p>Why TikTok is the best starting point, how YouTube Shorts compares, and when it makes sense to buy a cheap Instagram or X account.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3>Finding the Right Streamers</h3>
+      <p>How to pick streamers that keep clipping fun, avoid burnout, and know when it's time to switch to keep the views coming.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <h3>Spotting Viral Moments</h3>
+      <p>The viewer test for every clip, why the moments before and after the peak are often more viral, and how to own the algorithm.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✂️</div>
+      <h3>Editing & Speed</h3>
+      <p>The 1.5-second hook rule, cutting dead space ruthlessly, the caption debate, and why CapCut is the only tool you need.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3>The Caption System</h3>
+      <p>The exact caption formula that drives clicks, styling rules that work, and how quote captions boost your watch-through rate.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Preview / TOC -->
+<section id="preview">
+  <div class="section-label">// Inside The Guide</div>
+  <h2 class="section-title">A complete blueprint,<br>not just tips</h2>
+
+  <div class="preview-section">
+    <div class="toc-card">
+      <h3>Table of Contents</h3>
+      <div class="toc-item">
+        <span class="toc-number">01</span>
+        <span class="toc-label">Introduction to Clipping</span>
+        <span class="toc-locked">🔒</span>
+      </div>
+      <div class="toc-item">
+        <span class="toc-number">02</span>
+        <span class="toc-label">Choosing Your Platform</span>
+        <span class="toc-locked">🔒</span>
+      </div>
+      <div class="toc-item">
+        <span class="toc-number">03</span>
+        <span class="toc-label">Finding the Right Streamers</span>
+        <span class="toc-locked">🔒</span>
+      </div>
+      <div class="toc-item">
+        <span class="toc-number">04</span>
+        <span class="toc-label">Finding Clips Worth Making</span>
+        <span class="toc-locked">🔒</span>
+      </div>
+      <div class="toc-item">
+        <span class="toc-number">05</span>
+        <span class="toc-label">Editing Clips</span>
+        <span class="toc-locked">🔒</span>
+      </div>
+      <div class="toc-item">
+        <span class="toc-number">06</span>
+        <span class="toc-label">Captions</span>
+        <span class="toc-locked" style="color: var(--neon-green);">🔓</span>
+      </div>
+    </div>
+
+    <div class="preview-text">
+      <h3>This isn't surface-level advice</h3>
+      <p>ClipMastery is a complete, no-fluff guide built from real experience running clip channels. Every chapter is actionable — no filler, no padding.</p>
+      <p>Here's what makes it different:</p>
+      <ul>
+        <li><span class="check">✓</span> How to get paid through the Kick clipping program</li>
+        <li><span class="check">✓</span> Platform-by-platform growth strategies</li>
+        <li><span class="check">✓</span> The caption formula that drives clicks</li>
+        <li><span class="check">✓</span> Editing techniques that boost watch time</li>
+        <li><span class="check">✓</span> Free updates as platforms change</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-label">// Questions</div>
+  <h2 class="section-title">Frequently asked</h2>
+
+  <div class="faq-grid">
+    <div class="faq-item">
+      <h4>What format is the guide?</h4>
+      <p>It's a professionally designed PDF that's emailed to you instantly after purchase. Read it on any device — desktop, tablet, or phone.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Do I need any experience?</h4>
+      <p>Not at all. The guide starts from the basics and works up to advanced strategies. Complete beginners and experienced clippers alike will find value.</p>
+    </div>
+    <div class="faq-item">
+      <h4>What platforms does it cover?</h4>
+      <p>YouTube, TikTok, YouTube Shorts, and Instagram Reels. We cover how to work within each platform's rules and optimise your clips for each one.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Will it stay updated?</h4>
+      <p>Absolutely. When platforms change their algorithms or policies, the guide gets updated and you get access to the latest version automatically.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Can I really make money clipping?</h4>
+      <p>Yes. Clip channels generate revenue through ad monetisation, sponsorships, and affiliate deals. The guide covers realistic income expectations and how to scale.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Free Preview -->
+<section id="free-preview" class="free-preview">
+  <div class="preview-badge">👁 Free Preview — Chapter 06: Captions</div>
+  <h2 class="section-title">See the quality for yourself</h2>
+  <p class="section-desc">Here's a taste of what's inside the guide. This is from Chapter 06 — the caption system that drives clicks.</p>
+
+  <div class="preview-content">
+    <h3>Captions Exist to Strengthen the Hook</h3>
+    <p>The caption on your clip isn't a summary. It isn't a description. <strong style="color: var(--text-primary);">Its only job is to add to the hook of the video.</strong> Every word in your caption should be working to make the viewer think: "I need to watch this."</p>
+    <p>Think of the caption as a promise. You're telling the viewer that something worth their time is about to happen in this clip — and the content needs to deliver on that promise. A great caption creates curiosity, urgency, or emotional investment in the first fraction of a second.</p>
+
+    <h3 style="margin-top: 2rem;">The Caption Formula</h3>
+    <p>There's a proven structure that works consistently across platforms. Once you internalise it, writing captions becomes second nature.</p>
+
+    <div class="preview-formula-box blurred">
+      <div class="preview-formula-label">The Caption Blueprint</div>
+      <div class="preview-formula-text">
+        <span class="fg">Streamer Name</span> → <span class="fy">Emotion</span> → <span class="fp">Reason the Viewer Cares</span>
+      </div>
+      <div class="blur-unlock">
+        <a href="#pricing" class="blur-unlock-btn" onclick="smoothScroll(event, 'pricing')">🔒 Unlock to Reveal</a>
+      </div>
+    </div>
+
+    <p>The streamer name hooks fans of that creator. The emotion tells the viewer the intensity of what they're about to see. The reason they care creates the curiosity gap — the thing that makes them need to watch to find out what happened.</p>
+
+    <div class="preview-fade">
+      <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 300; line-height: 1.8;">Notice how this works with a real example: fans of the creator are immediately hooked. The emotion word tells you the stakes are high. And the reason creates a curiosity gap — you need to watch to see how it played out. There are specific emotion words that consistently outperform others, and a styling system that...</p>
+      <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 300; line-height: 1.8;">The guide also covers quote captions — a second type of caption placed near the end of the clip that can push your average view duration from 70% to 90%+. The placement, styling, and timing of these are covered in detail along with...</p>
+
+      <div class="preview-fade-overlay">
+        <a href="#pricing" class="btn-primary">Unlock the Full Guide — £8.99</a>
+        <div class="preview-fade-text">Includes this chapter + 5 more</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Pricing -->
+<section id="pricing">
+  <div class="section-label">// Get Instant Access</div>
+  <h2 class="section-title">One price. Full guide.<br>Lifetime access.</h2>
+  <p class="section-desc" style="margin: 0 auto;">No subscriptions, no upsells. Pay once and get everything — including all future updates.</p>
+
+  <div class="pricing-card">
+    <div class="pricing-popular">Best Value</div>
+    <div class="price">
+      <span class="price-currency">£</span>8.99
+      <span class="price-period">One-time payment · Lifetime access</span>
+    </div>
+    <ul class="pricing-features">
+      <li><span class="pf-icon">✓</span> Complete 6-chapter guide</li>
+      <li><span class="pf-icon">✓</span> How to get paid clipping (Kick program)</li>
+      <li><span class="pf-icon">✓</span> Platform strategies (TikTok, YT, IG, X)</li>
+      <li><span class="pf-icon">✓</span> Caption formula & editing system</li>
+      <li><span class="pf-icon">✓</span> Delivered instantly to your email</li>
+      <li><span class="pf-icon">✓</span> Free lifetime updates</li>
+    </ul>
+    <button class="pricing-btn" onclick="openModal()">Get Instant Access</button>
+    <div class="pricing-guarantee">🔒 Secure checkout · Instant delivery</div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">CLIPMASTERY</div>
+  <p>© 2026 ClipMastery. All rights reserved.</p>
+</footer>
+
+</div><!-- end landing-view -->
+
+
+<!-- Payment Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <div id="checkout-form">
+      <h2>Unlock ClipMastery</h2>
+      <p>Complete your purchase to get instant access to the full guide.</p>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="you@email.com" required>
+      </div>
+      <div class="form-group">
+        <label>Name on Card</label>
+        <input type="text" id="name" placeholder="Full name" required>
+      </div>
+      <div class="form-group">
+        <label>Card Number</label>
+        <input type="text" id="card" placeholder="1234 5678 9012 3456" maxlength="19" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Expiry</label>
+          <input type="text" id="expiry" placeholder="MM / YY" maxlength="7" required>
+        </div>
+        <div class="form-group">
+          <label>CVC</label>
+          <input type="text" id="cvc" placeholder="123" maxlength="4" required>
+        </div>
+      </div>
+
+      <button class="modal-pay-btn" onclick="handlePayment()">Pay £8.99</button>
+      <div class="modal-secure">🔒 256-bit SSL encrypted · Your data is safe</div>
+    </div>
+
+    <div class="success-view" id="success-view">
+      <div class="success-icon">✓</div>
+      <h2>You're In!</h2>
+      <p>Check your email — the ClipMastery PDF is on its way. Welcome aboard.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── Smooth scroll (slower, smoother) ───
+  function smoothScroll(e, targetId) {
+    e.preventDefault();
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    const start = window.pageYOffset;
+    const end = target.getBoundingClientRect().top + start - 80;
+    const distance = end - start;
+    const duration = Math.min(1800, Math.max(800, Math.abs(distance) * 0.6));
+    let startTime = null;
+
+    function ease(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      window.scrollTo(0, start + distance * ease(progress));
+      if (progress < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  // Attach smooth scroll to all anchor links
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        const id = this.getAttribute('href').substring(1);
+        if (id && document.getElementById(id)) {
+          smoothScroll(e, id);
+        }
+      });
+    });
+  });
+
+  // ─── Modal ───
+  function openModal() {
+    document.getElementById('modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  function handlePayment() {
+    // Placeholder — replace with Gumroad/LemonSqueezy link
+    document.getElementById('checkout-form').style.display = 'none';
+    document.getElementById('success-view').classList.add('active');
+  }
+
+  // ─── Card formatting ───
+  document.getElementById('card')?.addEventListener('input', function(e) {
+    let v = e.target.value.replace(/\D/g, '').substring(0, 16);
+    e.target.value = v.replace(/(.{4})/g, '$1 ').trim();
+  });
+
+  document.getElementById('expiry')?.addEventListener('input', function(e) {
+    let v = e.target.value.replace(/\D/g, '').substring(0, 4);
+    if (v.length >= 2) v = v.substring(0, 2) + ' / ' + v.substring(2);
+    e.target.value = v;
+  });
+</script>
+
+</body>
+</html>
